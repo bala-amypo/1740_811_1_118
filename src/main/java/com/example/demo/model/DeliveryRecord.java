@@ -1,50 +1,35 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "delay_score_records")
-public class DelayScoreRecord {
+@Table(name = "delivery_records")
+public class DeliveryRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Long supplierId;
-
-    @Column(nullable = false)
     private Long poId;
 
     @Column(nullable = false)
-    private Integer delayDays;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DelaySeverity delaySeverity;
+    private LocalDate actualDeliveryDate;
 
     @Column(nullable = false)
-    private Double score;
+    private Integer deliveredQuantity;
 
-    @Column(nullable = false)
-    private LocalDateTime computedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        computedAt = LocalDateTime.now();
-    }
+    private String notes;
 
     // Constructors
-    public DelayScoreRecord() {
+    public DeliveryRecord() {
     }
 
-    public DelayScoreRecord(Long supplierId, Long poId, Integer delayDays, 
-                           DelaySeverity delaySeverity, Double score) {
-        this.supplierId = supplierId;
+    public DeliveryRecord(Long poId, LocalDate actualDeliveryDate, Integer deliveredQuantity, String notes) {
         this.poId = poId;
-        this.delayDays = delayDays;
-        this.delaySeverity = delaySeverity;
-        this.score = score;
+        this.actualDeliveryDate = actualDeliveryDate;
+        this.deliveredQuantity = deliveredQuantity;
+        this.notes = notes;
     }
 
     // Getters and Setters
@@ -56,14 +41,6 @@ public class DelayScoreRecord {
         this.id = id;
     }
 
-    public Long getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Long supplierId) {
-        this.supplierId = supplierId;
-    }
-
     public Long getPoId() {
         return poId;
     }
@@ -72,36 +49,28 @@ public class DelayScoreRecord {
         this.poId = poId;
     }
 
-    public Integer getDelayDays() {
-        return delayDays;
+    public LocalDate getActualDeliveryDate() {
+        return actualDeliveryDate;
     }
 
-    public void setDelayDays(Integer delayDays) {
-        this.delayDays = delayDays;
+    public void setActualDeliveryDate(LocalDate actualDeliveryDate) {
+        this.actualDeliveryDate = actualDeliveryDate;
     }
 
-    public DelaySeverity getDelaySeverity() {
-        return delaySeverity;
+    public Integer getDeliveredQuantity() {
+        return deliveredQuantity;
     }
 
-    public void setDelaySeverity(DelaySeverity delaySeverity) {
-        this.delaySeverity = delaySeverity;
+    public void setDeliveredQuantity(Integer deliveredQuantity) {
+        this.deliveredQuantity = deliveredQuantity;
     }
 
-    public Double getScore() {
-        return score;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
-    }
-
-    public LocalDateTime getComputedAt() {
-        return computedAt;
-    }
-
-    public void setComputedAt(LocalDateTime computedAt) {
-        this.computedAt = computedAt;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
 
