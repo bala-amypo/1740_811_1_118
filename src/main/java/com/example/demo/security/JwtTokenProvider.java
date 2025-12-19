@@ -2,70 +2,79 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Component
 public class JwtTokenProvider {
-    private final SecretKey secretKey;
-    private final long validityInMs;
 
-    public JwtTokenProvider(String secret, long validityInMs) {
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.validityInMs = validityInMs;
-    }
+    // Token validity: 1 hour
+    private static final long JWT_EXPIRATION_MS = 60 * 60 * 1000;
 
+    // Secret key (for demo purpose; move to application.yml in real apps)
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    // Generate JWT token
     public String generateToken(Authentication authentication) {
+
         String username = authentication.getName();
-        String roles = authentication.getAuthorities().stream()
+
+        String roles = authentication.getAuthorities()
+                .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMs);
+        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
 
         return Jwts.builder()
-                .subject(username)
+                .setSubject(username)
                 .claim("roles", roles)
-                .issuedAt(now)
-                .expiration(validity)
-                .signWith(secretKey)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    // Extract username from token
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
+
+    // Validate JWT token
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .verifyWith(secretKey)
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
                     .build()
-                    .parseSignedClaims(token);
+                    .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return false;
         }
     }
 
-    public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-        return claims.getSubject();
-    }
-
+    // Extract roles from token
     public String getRolesFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseClaimsJws(token)
+                .getBody();
+
         return claims.get("roles", String.class);
     }
 }
-
