@@ -1,5 +1,6 @@
 package com.example.demo.controller
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 @RestController
 @RequestMapping("/api/suppliers")
 class SupplierProfileController{
@@ -12,7 +13,9 @@ class SupplierProfileController{
         return service.createSupplier(supplier);
     }
     @GetMapping("/getsupplier")
-    List
+    List getallSuppliers(){
+        return service.getallSuppliers();
+    }
 
 
 
