@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface SupplierProfileRepository extends JpaRepository<SupplierProfile, Long> {
-    Optional<SupplierProfile> findBySupplierCode(String code);
+    Optional<SupplierProfile> findBySupplierCode(String supplierCode);
 }
 
