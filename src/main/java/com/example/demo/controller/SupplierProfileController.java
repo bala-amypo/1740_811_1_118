@@ -3,8 +3,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/suppliers")
 class SupplierProfileController{
+    private final 
     @PostMapping("/createsupplier")
-    SupplierProfile 
+    SupplierProfile createSupplier(Requestbody SupplierProfile supplier){
+
+    }
 
 
 
