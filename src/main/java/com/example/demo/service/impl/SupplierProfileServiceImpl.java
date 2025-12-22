@@ -30,6 +30,9 @@ public class SupplierProfileServiceImpl implements SupplierProfileService {
     
     @Override
     public Optional<SupplierProfile> getBySupplierCode(String supplierCode) {
+        if(supplierCode=="000"){
+            throw new BadRequestException("supplierCode must not be Zero" + supplierCode);
+        }
         return supplierProfileRepository.findBySupplierCode(supplierCode);
     }
     

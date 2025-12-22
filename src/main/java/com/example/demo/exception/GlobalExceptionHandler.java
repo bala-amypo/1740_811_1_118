@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(ex.getMessage());
     }
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleNotFound(B ex) {
+    public ResponseEntity<String> handleNotFound(BadRequestException ex) {
         return ResponseEntity.status(400).body(ex.getMessage());
     }
 }
