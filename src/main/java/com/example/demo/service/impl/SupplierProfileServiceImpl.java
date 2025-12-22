@@ -31,7 +31,7 @@ public class SupplierProfileServiceImpl implements SupplierProfileService {
     @Override
     public Optional<SupplierProfile> getBySupplierCode(String supplierCode) {
         if(supplierCode == null || supplierCode.trim().isEmpty() || supplierCode.length()<4 ){
-            throw new BadRequestException("supplierCode must not be Zero" + supplierCode);
+            throw new BadRequestException("supplierCode must not be Zero " + supplierCode);
         }
         return supplierProfileRepository.findBySupplierCode(supplierCode);
     }
