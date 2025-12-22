@@ -4,7 +4,7 @@ import com.example.demo.model.SupplierProfile;
 import com.example.demo.repository.SupplierProfileRepository;
 import com.example.demo.service.SupplierProfileService;
 import org.springframework.stereotype.Service;
-
+import com.example.demo.exception.BadRequestException;
 import java.util.List;
 import java.util.Optional;
 
