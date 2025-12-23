@@ -1,8 +1,8 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 @Entity
 @Table(name = "supplier_profiles")
 public class SupplierProfile {
