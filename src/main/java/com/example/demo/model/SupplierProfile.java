@@ -3,6 +3,7 @@ package com.example.demo.model;
 import java.time.LocalDateTime;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence. 
 @Entity
 @Table(name = "supplier_profiles")
 public class SupplierProfile {
