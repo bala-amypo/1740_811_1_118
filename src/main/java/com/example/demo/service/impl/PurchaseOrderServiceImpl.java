@@ -1,59 +1,53 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.model.PurchaseOrderRecord;
 import com.example.demo.model.SupplierProfile;
 import com.example.demo.repository.PurchaseOrderRecordRepository;
 import com.example.demo.repository.SupplierProfileRepository;
-import com.example.demo.service.PurchaseOrderService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class PurchaseOrderServiceImpl implements PurchaseOrderService {
-    
-    private final PurchaseOrderRecordRepository purchaseOrderRecordRepository;
-    private final SupplierProfileRepository supplierProfileRepository;
-    
-    public PurchaseOrderServiceImpl(PurchaseOrderRecordRepository purchaseOrderRecordRepository,
-                                   SupplierProfileRepository supplierProfileRepository) {
-        this.purchaseOrderRecordRepository = purchaseOrderRecordRepository;
-        this.supplierProfileRepository = supplierProfileRepository;
+public class PurchaseOrderServiceImpl {
+
+    private final PurchaseOrderRecordRepository poRepo;
+    private final SupplierProfileRepository supplierRepo;
+
+    public PurchaseOrderServiceImpl(PurchaseOrderRecordRepository poRepo,
+                                    SupplierProfileRepository supplierRepo) {
+        this.poRepo = poRepo;
+        this.supplierRepo = supplierRepo;
     }
-    
-    @Override
+
     public PurchaseOrderRecord createPurchaseOrder(PurchaseOrderRecord po) {
-        // Validate supplier exists
-        SupplierProfile supplier = supplierProfileRepository.findById(po.getSupplierId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid supplierId: " + po.getSupplierId()));
-        
-        // Validate supplier is active
-        if (!supplier.getActive()) {
-            throw new IllegalArgumentException("Supplier must be active");
+
+        Optional<SupplierProfile> supplierOpt =
+                supplierRepo.findById(po.getSupplierId());
+
+        if (supplierOpt.isEmpty()) {
+            throw new BadRequestException("Invalid supplierId");
         }
-        
-        // Validate quantity
-        if (po.getQuantity() == null || po.getQuantity() <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
+
+        if (!Boolean.TRUE.equals(supplierOpt.get().getActive())) {
+            throw new BadRequestException("Supplier must be active");
         }
-        
-        return purchaseOrderRecordRepository.save(po);
+
+        return poRepo.save(po);
     }
-    
-    @Override
+
     public List<PurchaseOrderRecord> getPOsBySupplier(Long supplierId) {
-        return purchaseOrderRecordRepository.findBySupplierId(supplierId);
+        return poRepo.findBySupplierId(supplierId);
     }
-    
-    @Override
-    public PurchaseOrderRecord getPOById(Long id) {
-        return purchaseOrderRecordRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Purchase order not found with id: " + id));
+
+    public Optional<PurchaseOrderRecord> getPOById(Long id) {
+        return poRepo.findById(id);
     }
-    
-    @Override
+
     public List<PurchaseOrderRecord> getAllPurchaseOrders() {
-        return purchaseOrderRecordRepository.findAll();
+        return poRepo.findAll();
     }
 }
 
