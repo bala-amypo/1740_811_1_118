@@ -6,45 +6,63 @@ import com.example.demo.model.SupplierProfile;
 import com.example.demo.repository.PurchaseOrderRecordRepository;
 import com.example.demo.repository.SupplierProfileRepository;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PurchaseOrderServiceImpl {
 
-    private final PurchaseOrderRecordRepository poRepo;
-    private final SupplierProfileRepository supplierRepo;
+    private PurchaseOrderRecordRepository poRepo;
+    private SupplierProfileRepository supplierRepo;
 
+    // No-arg constructor to support injection by frameworks / Mockito
+    public PurchaseOrderServiceImpl() {}
+
+    @org.springframework.beans.factory.annotation.Autowired
     public PurchaseOrderServiceImpl(PurchaseOrderRecordRepository poRepo,
                                     SupplierProfileRepository supplierRepo) {
         this.poRepo = poRepo;
         this.supplierRepo = supplierRepo;
+        System.out.println("[DEBUG] PurchaseOrderServiceImpl constructed with poRepo=" + (poRepo==null?"null":poRepo.getClass()) + ", supplierRepo=" + (supplierRepo==null?"null":supplierRepo.getClass()));
     }
-public PurchaseOrderRecord createPurchaseOrder(PurchaseOrderRecord po) {
 
-    // If supplier exists AND inactive → error
-    supplierRepo.findById(po.getSupplierId()).ifPresent(supplier -> {
-        if (Boolean.FALSE.equals(supplier.getActive())) {
+    @org.springframework.beans.factory.annotation.Autowired
+    public void setPoRepo(PurchaseOrderRecordRepository poRepo) { this.poRepo = poRepo; }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public void setSupplierRepo(SupplierProfileRepository supplierRepo) { this.supplierRepo = supplierRepo; }
+
+    public PurchaseOrderRecord createPurchaseOrder(PurchaseOrderRecord po) {
+
+        System.out.println("[DEBUG] createPurchaseOrder called with supplierId=" + po.getSupplierId());
+        System.out.println("[DEBUG] supplierRepo instance class=" + (supplierRepo==null?"null":supplierRepo.getClass()));
+        System.out.println("[DEBUG] poRepo instance class=" + (poRepo==null?"null":poRepo.getClass()));
+        Optional<SupplierProfile> supplierOpt =
+                supplierRepo.findById(po.getSupplierId());
+        System.out.println("[DEBUG] supplierOpt present? " + (supplierOpt != null && supplierOpt.isPresent()));
+
+        if (supplierOpt.isEmpty()) {
+            throw new BadRequestException("Invalid supplierId");
+        }
+
+        if (!Boolean.TRUE.equals(supplierOpt.get().getActive())) {
             throw new BadRequestException("Supplier must be active");
         }
-    });
 
-    // If supplier DOES NOT exist → allow (tests assume logical FK)
-    return poRepo.save(po);
-}
+        return poRepo.save(po);
+    }
 
+    public List<PurchaseOrderRecord> getPOsBySupplier(Long supplierId) {
+        return poRepo.findBySupplierId(supplierId);
+    }
 
-  public List<PurchaseOrderRecord> getPOsBySupplier(Long supplierId) {
-    return poRepo.findBySupplierId(supplierId); // NO validation
-}
-
-public Optional<PurchaseOrderRecord> getPOById(Long id) {
-    return poRepo.findById(id); // already correct
-}
-
-
+    public Optional<PurchaseOrderRecord> getPOById(Long id) {
+        return poRepo.findById(id);
+    }
 
     public List<PurchaseOrderRecord> getAllPurchaseOrders() {
         return poRepo.findAll();
     }
 }
+
