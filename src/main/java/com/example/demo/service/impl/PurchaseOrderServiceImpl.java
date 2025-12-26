@@ -37,10 +37,10 @@ public class PurchaseOrderServiceImpl {
         return poRepo.findBySupplierId(supplierId);
     }
 
-    public PurchaseOrderRecord getPOById(Long id) {
-        return poRepo.findById(id)
-                .orElseThrow(() -> new BadRequestException("PO not found"));
-    }
+    public Optional<PurchaseOrderRecord> getPOById(Long id) {
+    return poRepo.findById(id);
+}
+
 
     public List<PurchaseOrderRecord> getAllPurchaseOrders() {
         return poRepo.findAll();
