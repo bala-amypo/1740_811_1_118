@@ -22,12 +22,11 @@ public class DeliveryRecordServiceImpl {
 
     public DeliveryRecord recordDelivery(DeliveryRecord delivery) {
 
-        if (poRepo.findById(delivery.getPoId()).isEmpty()) {
-            throw new BadRequestException("Invalid PO id");
-        }
+        poRepo.findById(delivery.getPoId())
+                .orElseThrow(() -> new BadRequestException("Invalid PO id"));
 
-        if (delivery.getDeliveredQuantity() < 0) {
-            throw new BadRequestException("Delivered quantity must be >=");
+        if (delivery.getDeliveredQuantity() <= 0) {
+            throw new BadRequestException("Delivered quantity must be positive");
         }
 
         return deliveryRepo.save(delivery);
@@ -41,4 +40,3 @@ public class DeliveryRecordServiceImpl {
         return deliveryRepo.findAll();
     }
 }
-

@@ -8,7 +8,6 @@ import com.example.demo.repository.SupplierProfileRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PurchaseOrderServiceImpl {
@@ -24,15 +23,11 @@ public class PurchaseOrderServiceImpl {
 
     public PurchaseOrderRecord createPurchaseOrder(PurchaseOrderRecord po) {
 
-        Optional<SupplierProfile> supplierOpt =
-                supplierRepo.findById(po.getSupplierId());
+        SupplierProfile supplier = supplierRepo.findById(po.getSupplierId())
+                .orElseThrow(() -> new BadRequestException("Invalid supplierId"));
 
-        if (supplierOpt.isEmpty()) {
-            throw new BadRequestException("Invalid supplierId");
-        }
-
-        if (!Boolean.TRUE.equals(supplierOpt.get().getActive())) {
-            throw new BadRequestException("Supplier must be active");
+        if (!Boolean.TRUE.equals(supplier.getActive())) {
+            throw new BadRequestException("Supplier is inactive");
         }
 
         return poRepo.save(po);
@@ -42,12 +37,12 @@ public class PurchaseOrderServiceImpl {
         return poRepo.findBySupplierId(supplierId);
     }
 
-    public Optional<PurchaseOrderRecord> getPOById(Long id) {
-        return poRepo.findById(id);
+    public PurchaseOrderRecord getPOById(Long id) {
+        return poRepo.findById(id)
+                .orElseThrow(() -> new BadRequestException("PO not found"));
     }
 
     public List<PurchaseOrderRecord> getAllPurchaseOrders() {
         return poRepo.findAll();
     }
 }
-
