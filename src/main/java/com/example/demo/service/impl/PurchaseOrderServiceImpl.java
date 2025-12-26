@@ -6,7 +6,7 @@ import com.example.demo.model.SupplierProfile;
 import com.example.demo.repository.PurchaseOrderRecordRepository;
 import com.example.demo.repository.SupplierProfileRepository;
 import org.springframework.stereotype.Service;
-import java.util.Optional
+import java.util.Optional;
 import java.util.List;
 
 @Service
