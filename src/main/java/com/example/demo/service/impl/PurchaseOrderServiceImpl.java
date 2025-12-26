@@ -34,13 +34,14 @@ public PurchaseOrderRecord createPurchaseOrder(PurchaseOrderRecord po) {
 }
 
 
-    public List<PurchaseOrderRecord> getPOsBySupplier(Long supplierId) {
-        return poRepo.findBySupplierId(supplierId);
-    }
-
-    public Optional<PurchaseOrderRecord> getPOById(Long id) {
-    return poRepo.findById(id);
+  public List<PurchaseOrderRecord> getPOsBySupplier(Long supplierId) {
+    return poRepo.findBySupplierId(supplierId); // NO validation
 }
+
+public Optional<PurchaseOrderRecord> getPOById(Long id) {
+    return poRepo.findById(id); // already correct
+}
+
 
 
     public List<PurchaseOrderRecord> getAllPurchaseOrders() {

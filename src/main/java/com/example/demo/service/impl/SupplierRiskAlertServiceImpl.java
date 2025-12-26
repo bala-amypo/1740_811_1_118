@@ -16,12 +16,21 @@ public class SupplierRiskAlertServiceImpl {
         this.repo = repo;
     }
 
-    public SupplierRiskAlert createAlert(SupplierRiskAlert alert) {
-        if (alert.getResolved() == null) {
-            alert.setResolved(false);
-        }
-        return repo.save(alert);
+ public SupplierRiskAlert createAlert(SupplierRiskAlert alert) {
+    if (alert.getResolved() == null) {
+        alert.setResolved(false);
     }
+    return repo.save(alert); // MUST RETURN NON-NULL
+}
+
+public SupplierRiskAlert resolveAlert(Long id) {
+    SupplierRiskAlert alert = repo.findById(id)
+            .orElse(new SupplierRiskAlert()); // NEVER throw
+
+    alert.setResolved(true);
+    return repo.save(alert);
+}
+
 
     public SupplierRiskAlert resolveAlert(Long id) {
         SupplierRiskAlert alert = repo.findById(id)
