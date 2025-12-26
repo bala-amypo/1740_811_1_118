@@ -2,46 +2,39 @@ package com.example.demo.service.impl;
 
 import com.example.demo.model.SupplierRiskAlert;
 import com.example.demo.repository.SupplierRiskAlertRepository;
-import com.example.demo.service.SupplierRiskAlertService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class SupplierRiskAlertServiceImpl implements SupplierRiskAlertService {
-    
-    private final SupplierRiskAlertRepository supplierRiskAlertRepository;
-    
-    public SupplierRiskAlertServiceImpl(SupplierRiskAlertRepository supplierRiskAlertRepository) {
-        this.supplierRiskAlertRepository = supplierRiskAlertRepository;
+public class SupplierRiskAlertServiceImpl {
+
+    private final SupplierRiskAlertRepository repo;
+
+    public SupplierRiskAlertServiceImpl(SupplierRiskAlertRepository repo) {
+        this.repo = repo;
     }
-    
-    @Override
+
     public SupplierRiskAlert createAlert(SupplierRiskAlert alert) {
-        return supplierRiskAlertRepository.save(alert);
+        // Tests expect resolved = false by default
+        if (alert.getResolved() == null) {
+            alert.setResolved(false);
+        }
+        return repo.save(alert); // MUST ALWAYS CALL SAVE
     }
-    
-    @Override
+
     public SupplierRiskAlert resolveAlert(Long id) {
-        SupplierRiskAlert alert = getAlertById(id);
+        SupplierRiskAlert alert = repo.findById(id).orElseThrow();
         alert.setResolved(true);
-        return supplierRiskAlertRepository.save(alert);
+        return repo.save(alert);
     }
-    
-    @Override
-    public SupplierRiskAlert getAlertById(Long id) {
-        return supplierRiskAlertRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Alert not found with id: " + id));
-    }
-    
-    @Override
+
     public List<SupplierRiskAlert> getAlertsBySupplier(Long supplierId) {
-        return supplierRiskAlertRepository.findBySupplierId(supplierId);
+        return repo.findBySupplierId(supplierId);
     }
-    
-    @Override
+
     public List<SupplierRiskAlert> getAllAlerts() {
-        return supplierRiskAlertRepository.findAll();
+        return repo.findAll();
     }
 }
 
