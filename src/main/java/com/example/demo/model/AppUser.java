@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import com.example.demo.enums.Role;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,8 +17,10 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username;
 
+    @Column(nullable = false)
     private String email;
 
     private String password;
@@ -75,4 +76,3 @@ public class AppUser {
         return createdAt;
     }
 }
-
