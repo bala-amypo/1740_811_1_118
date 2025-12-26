@@ -1,42 +1,39 @@
-package com.example.demo.model;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
+import com.example.demo.model.PurchaseOrderRecord;
+import com.example.demo.service.impl.PurchaseOrderServiceImpl;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "poNumber"))
-public class PurchaseOrderRecord {
+import java.util.List;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@RestController
+@RequestMapping("/api/purchase-orders")
+public class PurchaseOrderController {
 
-    private String poNumber;
-    private Long supplierId;
-    private String itemDescription;
-    private Integer quantity;
-    private LocalDate promisedDeliveryDate;
-    private LocalDate issuedDate;
+    private final PurchaseOrderServiceImpl service;
 
-    // getters & setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getPoNumber() { return poNumber; }
-    public void setPoNumber(String poNumber) { this.poNumber = poNumber; }
-
-    public Long getSupplierId() { return supplierId; }
-    public void setSupplierId(Long supplierId) { this.supplierId = supplierId; }
-
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
-
-    public LocalDate getPromisedDeliveryDate() { return promisedDeliveryDate; }
-    public void setPromisedDeliveryDate(LocalDate promisedDeliveryDate) {
-        this.promisedDeliveryDate = promisedDeliveryDate;
+    public PurchaseOrderController(PurchaseOrderServiceImpl service) {
+        this.service = service;
     }
 
-    public LocalDate getIssuedDate() { return issuedDate; }
-    public void setIssuedDate(LocalDate issuedDate) { this.issuedDate = issuedDate; }
-}
+    @PostMapping
+    public PurchaseOrderRecord create(@RequestBody PurchaseOrderRecord po) {
+        return service.createPurchaseOrder(po);
+    }
 
+    @GetMapping("/{id}")
+    public PurchaseOrderRecord getById(@PathVariable Long id) {
+        // ✅ NO orElse here
+        return service.getPOById(id);
+    }
+
+    @GetMapping("/supplier/{supplierId}")
+    public List<PurchaseOrderRecord> getBySupplier(@PathVariable Long supplierId) {
+        return service.getPOsBySupplier(supplierId);
+    }
+
+    @GetMapping
+    public List<PurchaseOrderRecord> getAll() {
+        return service.getAllPurchaseOrders();
+    }
+}
