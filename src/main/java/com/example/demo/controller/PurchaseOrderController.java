@@ -21,11 +21,12 @@ public class PurchaseOrderController {
         return service.createPurchaseOrder(po);
     }
 
-    @GetMapping("/{id}")
-    public PurchaseOrderRecord getById(@PathVariable Long id) {
-        // ✅ NO orElse here
-        return service.getPOById(id);
-    }
+   @GetMapping("/{id}")
+public PurchaseOrderRecord getById(@PathVariable Long id) {
+    return service.getPOById(id)
+            .orElseThrow(() -> new BadRequestException("PO not found"));
+}
+
 
     @GetMapping("/supplier/{supplierId}")
     public List<PurchaseOrderRecord> getBySupplier(@PathVariable Long supplierId) {
