@@ -28,7 +28,7 @@ public class SwaggerConfig {
 
                 // 🌐 Server URL
                 .servers(List.of(
-                        new Server().url("https://9288.pro604cr.amypo.ai/")
+                        new Server().url("https://9420.pro604cr.amypo.ai/")
                 ))
 
                 // 🔐 Enable JWT Authorization globally
