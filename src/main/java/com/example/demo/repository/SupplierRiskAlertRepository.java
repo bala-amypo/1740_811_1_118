@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface SupplierRiskAlertRepository extends JpaRepository<SupplierRiskAlert, Long> {
     List<SupplierRiskAlert> findBySupplierId(Long supplierId);
+    
 }
 
