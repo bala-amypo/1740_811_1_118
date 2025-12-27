@@ -19,23 +19,23 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                // 📌 API Info
+                
                 .info(new Info()
                         .title("Supply Chain Weak Link Analyzer")
                         .version("1.0")
                         .description("JWT-secured Supply Chain Analytics API")
                 )
 
-                // 🌐 Server URL
+                
                 .servers(List.of(
                         new Server().url("https://9420.pro604cr.amypo.ai/")
                 ))
 
-                // 🔐 Enable JWT Authorization globally
+            
                 .addSecurityItem(new SecurityRequirement()
                         .addList(SECURITY_SCHEME_NAME))
 
-                // 🔑 Define JWT Security Scheme
+           
                 .components(new Components()
                         .addSecuritySchemes(
                                 SECURITY_SCHEME_NAME,
