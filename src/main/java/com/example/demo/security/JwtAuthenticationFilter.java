@@ -24,12 +24,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
+        System.out.println("[DEBUG] JwtAuthenticationFilter - Authorization header: " + header);
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
+            System.out.println("[DEBUG] JwtAuthenticationFilter - Token received: " + token);
 
             if (jwtTokenProvider.validateToken(token)) {
                 String username = jwtTokenProvider.getUsername(token);
+                System.out.println("[DEBUG] JwtAuthenticationFilter - Token valid; username: " + username);
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
@@ -37,7 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
+            } else {
+                System.out.println("[DEBUG] JwtAuthenticationFilter - Token invalid");
             }
+        } else {
+            System.out.println("[DEBUG] JwtAuthenticationFilter - No Bearer token present");
         }
 
         filterChain.doFilter(request, response);
