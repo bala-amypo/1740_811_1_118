@@ -2,12 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.model.PurchaseOrderRecord;
 import com.example.demo.service.impl.PurchaseOrderServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import com.example.demo.exception.BadRequestException;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/purchase-orders")
+@Tag(name = "Purchase Orders")
 public class PurchaseOrderController {
 
     private final PurchaseOrderServiceImpl service;
@@ -21,16 +23,14 @@ public class PurchaseOrderController {
         return service.createPurchaseOrder(po);
     }
 
-   @GetMapping("/{id}")
-public PurchaseOrderRecord getById(@PathVariable Long id) {
-    return service.getPOById(id)
-            .orElseThrow(() -> new BadRequestException("PO not found"));
-}
-
-
     @GetMapping("/supplier/{supplierId}")
     public List<PurchaseOrderRecord> getBySupplier(@PathVariable Long supplierId) {
         return service.getPOsBySupplier(supplierId);
+    }
+
+    @GetMapping("/{id}")
+    public PurchaseOrderRecord get(@PathVariable Long id) {
+        return service.getPOById(id).orElse(null);
     }
 
     @GetMapping

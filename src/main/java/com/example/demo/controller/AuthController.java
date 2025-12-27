@@ -3,28 +3,26 @@ package com.example.demo.controller;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
-import com.example.demo.security.JwtTokenProvider;
+import com.example.demo.service.AppUserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AppUserService appUserService;
 
-    public AuthController(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthController(AppUserService appUserService) {
+        this.appUserService = appUserService;
     }
 
     @PostMapping("/register")
     public JwtResponse register(@RequestBody RegisterRequest request) {
-        String token = jwtTokenProvider.generateToken(request.getUsername());
-        return new JwtResponse(token);
+        return appUserService.register(request);
     }
 
     @PostMapping("/login")
     public JwtResponse login(@RequestBody LoginRequest request) {
-        String token = jwtTokenProvider.generateToken(request.getUsername());
-        return new JwtResponse(token);
+        return appUserService.login(request);
     }
 }

@@ -10,7 +10,7 @@ public class JwtConfig {
     @Bean
     public JwtTokenProvider jwtTokenProvider() {
         return new JwtTokenProvider(
-                "my-secret-key-my-secret-key-my-secret-key", 
+                "my-secret-key-my-secret-key-my-secret-key", // ≥32 chars
                 3600000L
         );
     }
